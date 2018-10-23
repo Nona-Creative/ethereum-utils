@@ -1,0 +1,71 @@
+{
+  "Example": {
+    "addresses": {
+      "ganache": "0x22ee859d7748b215610b4d96d740e56df6960300",
+      "ropsten": null,
+      "rinkeby": null,
+      "kovan": null
+    },
+    "abi": [
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": false,
+            "name": "_a",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "_b",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "_result",
+            "type": "uint256"
+          }
+        ],
+        "name": "Sum",
+        "type": "event"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "_a",
+            "type": "uint256"
+          },
+          {
+            "name": "_b",
+            "type": "uint256"
+          }
+        ],
+        "name": "sum",
+        "outputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "getLastResult",
+        "outputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      }
+    ]
+  }
+}

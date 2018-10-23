@@ -1,0 +1,45 @@
+{
+  "name": "ethereum-utils",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "help": "package-json-help.js",
+    "_init:env": "cp .env.local .env",
+    "init": "npm-run-all _init:env",
+    "_test": "mocha \"src/**/*.test.js\" --opts mocha.opts -t 20000",
+    "_test:spec": "npm run _test -- --reporter spec",
+    "_test:spec:no-only": "npm run _test:spec -- --forbid-only",
+    "_test:dot": "npm run _test:spec -- --reporter dot",
+    "_test:dot:no-only": "npm run _test:dot -- --forbid-only",
+    "test": "npm run _test:spec",
+    "test:watch": "npm run _test:spec -- --watch",
+    "_cov:src": "nyc npm run _test:dot",
+    "cov": "npm run _cov:src",
+    "ci:validate": "circleci config validate",
+    "lint": "eslint --ext .js --ignore-path .gitignore ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ramda": "^0.25.0",
+    "web3": "^1.0.0-beta.36"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "big-number": "^1.0.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-http": "^4.2.0",
+    "eslint": "^5.6.1",
+    "find": "^0.2.9",
+    "ganache-cli": "^6.1.8",
+    "js-parametrize": "0.0.2",
+    "mocha": "^5.2.0",
+    "npm-run-all": "^4.1.3",
+    "nyc": "^13.0.1",
+    "package-json-help": "0.0.9",
+    "sinon": "^6.3.5",
+    "solc": "^0.4.25"
+  }
+}

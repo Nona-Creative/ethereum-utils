@@ -1,0 +1,10 @@
+{
+  "init": "initialize project",
+  "test": "run all tests",
+  "test:watch": "run all tests, in watch mode",
+  "test:e2e": "run all e2e tests",
+  "test:e2e:watch": "run all e2e tests, in watch mode",
+  "cov": "generate test coverage report",
+  "ci:validate": "validate CI config",
+  "lint": "run JS linter"
+}

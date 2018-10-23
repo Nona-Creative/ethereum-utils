@@ -1,0 +1,28 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# IDE
+.idea
+
+# dependencies
+/node_modules
+
+# system files
+.DS_Store
+*.swp
+
+# serverless
+.serverless
+
+# environment
+.env
+
+# testing
+.nyc_output
+
+# database
+.tmp
+.dynamodb
+
+# local
+.backups
+.local
