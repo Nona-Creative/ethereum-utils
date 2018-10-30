@@ -222,18 +222,8 @@ const _buildContractFromSummary = (network, Class, name) => (
   )
 )
 
-const _getContract = (summaryFilePath, network, contractClass, contractName) => (
-  R.compose(
-    _buildContractFromSummary(network, contractClass, contractName),
-    JSON.parse,
-    R.tryCatch(
-      x => fs.readFileSync(x, 'utf8'),
-      R.compose(
-        R.always(''),
-        R.tap(x => console.log(x)),
-      ),
-    ),
-  )(summaryFilePath)
+const _getContract = (summary, network, contractClass, contractName) => (
+  _buildContractFromSummary(network, contractClass, contractName, summary)
 )
 
 const getContract = R.curry(_getContract)
