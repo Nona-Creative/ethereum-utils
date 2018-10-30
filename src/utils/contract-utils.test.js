@@ -535,8 +535,9 @@ describe('contract-utils', () => {
       const instances = await SUT.deployAll(accounts[0], compiledContracts, web3)
 
       // when ... we get Contract instance using summary JSON
-      const _getContract = SUT.getContract('fixtures/test-contracts-summary.json', 'ganache')
-      const instance = _getContract(web3.eth.Contract, 'Example')
+      const summary = require(path.resolve(path.join(process.cwd(), 'fixtures/test-contracts-summary.json')))
+      const _getContract = SUT.getContract('ganache', web3.eth.Contract, 'Example')
+      const instance = _getContract(summary)
 
       // then ... should return expected instance
       assert.hasAllDeepKeys(instance.methods, instances['Example.sol:Example'].methods)

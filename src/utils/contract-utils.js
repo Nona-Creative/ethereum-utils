@@ -208,7 +208,7 @@ module.exports.deployAll = deployAll
 // create contract instance
 // ----------------------------------------------
 
-const _buildContractFromSummary = (network, Class, name) => (
+const _getContract = (network, Class, name, summary) => (
   R.converge(
     R.ifElse(
       (abi, address) => abi !== null && address !== null,
@@ -219,11 +219,7 @@ const _buildContractFromSummary = (network, Class, name) => (
       R.path([name, 'abi']),
       R.path([name, 'addresses', network]),
     ],
-  )
-)
-
-const _getContract = (summary, network, contractClass, contractName) => (
-  _buildContractFromSummary(network, contractClass, contractName, summary)
+  )(summary)
 )
 
 const getContract = R.curry(_getContract)
