@@ -208,12 +208,6 @@ module.exports.deployAll = deployAll
 // create contract instance
 // ----------------------------------------------
 
-const _getJsonAtPath = R.compose(
-  JSON.parse,
-  x => fs.readFileSync(x, {encoding: 'utf8'}),
-  x => path.resolve(process.cwd(), x),
-)
-
 const _buildContractFromSummary = (network, Class, name) => (
   R.converge(
     R.ifElse(
@@ -231,7 +225,14 @@ const _buildContractFromSummary = (network, Class, name) => (
 const _getContract = (summaryFilePath, network, contractClass, contractName) => (
   R.compose(
     _buildContractFromSummary(network, contractClass, contractName),
-    _getJsonAtPath,
+    JSON.parse,
+    R.tryCatch(
+      x => fs.readFileSync(x, 'utf8'),
+      R.compose(
+        R.always(''),
+        R.tap(x => console.log(x)),
+      ),
+    ),
   )(summaryFilePath)
 )
 
