@@ -53,7 +53,7 @@ describe('contract-utils', () => {
   })
 
   describe('send', () => {
-    it('should correctly send sum and return transaction receipt', async () => {
+    it('should correctly send sum and return transaction hash', async () => {
       // given
       const web3 = new Web3(ganache.provider())
       const accounts = await web3.eth.getAccounts()
@@ -66,7 +66,33 @@ describe('contract-utils', () => {
       // when ... we send sum method with 1 & 2 from account 0
       const method = instance.methods.sum(1, 2)
       const spy = sinon.spy(method, 'send')
-      const tx = await SUT.send(method, {from: accounts[0]})
+      const txHash = await SUT.send(method, {from: accounts[0]})
+
+      // then
+      // ... should return transaction hash
+      assert.match(txHash, /0x/)
+      // ... should have invoked sum send as expected
+      const contractAddress = instance._address
+      const callParams = spy.args[0][0]
+      assert.equal(callParams.from.toLowerCase(), accounts[0].toLowerCase())
+      assert.equal(callParams.to.toLowerCase(), contractAddress.toLowerCase())
+    })
+
+    it('should correctly send sum and return transaction receipt if waitForReceipt is true', async () => {
+      // given
+      const web3 = new Web3(ganache.provider())
+      const accounts = await web3.eth.getAccounts()
+      // ... an instance of Example contract
+      const filePath = path.resolve(process.cwd(), path.join('fixtures', 'test-compiled-contracts.json'))
+      const compiledContracts = JSON.parse(fs.readFileSync(filePath, {encoding: 'utf8'}))
+      const instances = await SUT.deployAll(accounts[0], compiledContracts, web3)
+      const instance = instances['Example.sol:Example']
+
+      // when ... we send sum method with 1 & 2 from account 0
+      const method = instance.methods.sum(1, 2)
+      const spy = sinon.spy(method, 'send')
+      const waitForReceipt = true
+      const tx = await SUT.send(method, {from: accounts[0]}, waitForReceipt)
 
       // then
       // ... should return transaction receipt (meaning sum was invoked with send not call)
@@ -107,7 +133,7 @@ describe('contract-utils', () => {
       const method = instance.methods.sum(1, 2)
       const estimateGasPrice = await method.estimateGas({from: accounts[0]})
       const spy = sinon.spy(method, 'send')
-      const tx = await SUT.send(method, {from: accounts[0]})
+      const tx = await SUT.send(method, {from: accounts[0]}, true)
 
       // then
       const callParams = spy.args[0][0]
@@ -135,7 +161,7 @@ describe('contract-utils', () => {
       // ... and GAS_PRICE_GWEI env variable is set to 123
       sandbox.stub(process, 'env').value({GAS_PRICE_GWEI: '123'})
       // ... and a sum method transaction has been processed
-      const tx = await SUT.send(instance.methods.sum(1, 2), {from: accounts[0]})
+      const tx = await SUT.send(instance.methods.sum(1, 2), {from: accounts[0]}, true)
 
       // when ... we get the Sum events from the transaction receipt
       const SumEvents = await SUT.events('Sum', tx)
@@ -166,9 +192,9 @@ describe('contract-utils', () => {
       // ... and GAS_PRICE_GWEI env variable is set to 123
       sandbox.stub(process, 'env').value({GAS_PRICE_GWEI: '123'})
       // ... and multiple Sum events
-      await SUT.send(instance.methods.sum(1, 2), {from: accounts[0]})
-      await SUT.send(instance.methods.sum(3, 4), {from: accounts[0]})
-      await SUT.send(instance.methods.sum(5, 6), {from: accounts[0]})
+      await SUT.send(instance.methods.sum(1, 2), {from: accounts[0]}, true)
+      await SUT.send(instance.methods.sum(3, 4), {from: accounts[0]}, true)
+      await SUT.send(instance.methods.sum(5, 6), {from: accounts[0]}, true)
       // ... transactions in period
       const results = await instance.getPastEvents('Sum', {fromBlock: 0, toBlock: 'latest'})
 

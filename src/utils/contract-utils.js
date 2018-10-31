@@ -22,12 +22,25 @@ module.exports.call = call
 // invoke method as a transaction on contract instance
 //-----------------------------------------
 
-const send = async (method, {from, ...params}) => {
+const send = async (method, {from, ...params}, waitForReceipt = false) => {
   const gas = await method.estimateGas({from, ...params})
   const gasPriceGwei = R.propOr('6.2', 'GAS_PRICE_GWEI', process.env)
   const gasPrice = new BigNumber(Web3.utils.toWei(gasPriceGwei, 'gwei'))
   const data = {gas, gasPrice: gasPrice.toString(), from, ...params}
-  return await method.send(data)
+  return new Promise((resolve, reject) => {
+    try {
+      method.send(data)
+        .on('transactionHash', transactionHash => (
+          waitForReceipt ? null : resolve(transactionHash)
+        ))
+        .on('receipt', receipt => (
+          waitForReceipt ? resolve(receipt) : null
+        ))
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
 }
 
 module.exports.send = send
